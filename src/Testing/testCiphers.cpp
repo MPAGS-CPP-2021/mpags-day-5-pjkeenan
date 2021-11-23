@@ -1,7 +1,6 @@
 #define CATCH_CONFIG_MAIN
 #include "catch.hpp"
 
-//#include "Cipher.hpp"
 #include "CipherFactory.hpp"
 #include "CaesarCipher.hpp"
 #include "PlayfairCipher.hpp"
@@ -13,7 +12,7 @@ bool testCipher( const Cipher& cipher, const CipherMode mode,
         return cipheredText == outputText;
     }
 
-TEST_CASE("Test ALL classical ciphers", "[all ciphers]")
+TEST_CASE("Test encryption ALL classical ciphers", "[all ciphers]")
 {
     std::vector<std::unique_ptr<Cipher>> cipherCollection;
     cipherCollection.push_back(cipherFactory(CipherType::Caesar, "10"));
@@ -30,8 +29,30 @@ TEST_CASE("Test ALL classical ciphers", "[all ciphers]")
     ciphertext.push_back("FHIQXLTLKLTLSUFNPQPKETFENIOLVSWLTFIAFTLAKOWATEQOKPPA");
     ciphertext.push_back("RIJVSUYVJN");
 
-    for(std::vector<int>::size_type i = 0; i < plaintext.size(); ++i){
+    for(std::vector<int>::size_type i {0}; i < plaintext.size(); ++i){
         REQUIRE(cipherCollection.at(i) -> applyCipher(plaintext.at(i), CipherMode::Encrypt) == ciphertext.at(i));
+    }
+}
+
+TEST_CASE("Test decryption ALL classical ciphers", "[all ciphers]")
+{
+    std::vector<std::unique_ptr<Cipher>> cipherCollection;
+    cipherCollection.push_back(cipherFactory(CipherType::Caesar, "10"));
+    cipherCollection.push_back(cipherFactory(CipherType::Playfair, "hello"));
+    cipherCollection.push_back(cipherFactory(CipherType::Vigenere, "KEY"));
+
+    std::vector<std::string> plainText;
+    plainText.push_back("ROVVYGYBVN");
+    plainText.push_back("FHIQXLTLKLTLSUFNPQPKETFENIOLVSWLTFIAFTLAKOWATEQOKPPA");
+    plainText.push_back("RIJVSUYVJN");
+
+    std::vector<std::string> cipherText;
+    cipherText.push_back("HELLOWORLD");
+    cipherText.push_back("BOBISXSOMESORTOFIUNIORCOMPLEXQXENOPHONEONEZEROTHINGZ");
+    cipherText.push_back("HELLOWORLD");
+
+    for(std::vector<int>::size_type i {0}; i < plainText.size(); ++i){
+        REQUIRE(cipherCollection.at(i) -> applyCipher(plainText.at(i), CipherMode::Decrypt) == cipherText.at(i));
     }
 }
 
